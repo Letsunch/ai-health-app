@@ -9,12 +9,14 @@ const DiagnosticTests = () => {
   const [editing, setEditing] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   const loadTests = async () => {
     try {
       setIsLoading(true);
       const data = await getTests();
       setTests(data);
+      setError('');
     } catch (err) {
       setError('Failed to load tests. Please try again.');
     } finally {
@@ -31,6 +33,7 @@ const DiagnosticTests = () => {
       setIsLoading(true);
       await addTest(test);
       await loadTests();
+      setIsFormVisible(false);
     } catch (err) {
       setError('Failed to add test. Please try again.');
     } finally {
@@ -44,6 +47,7 @@ const DiagnosticTests = () => {
       await updateTest(test.id, test);
       setEditing(null);
       await loadTests();
+      setIsFormVisible(false);
     } catch (err) {
       setError('Failed to update test. Please try again.');
     } finally {
@@ -52,6 +56,7 @@ const DiagnosticTests = () => {
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this test?')) return;
     try {
       setIsLoading(true);
       await deleteTest(id);
@@ -65,38 +70,56 @@ const DiagnosticTests = () => {
 
   const handleCancelEdit = () => {
     setEditing(null);
+    setIsFormVisible(false);
+  };
+
+  const toggleFormVisibility = () => {
+    setIsFormVisible(!isFormVisible);
+    if (!isFormVisible) {
+      setEditing(null);
+    }
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <h2 style={styles.title}>Diagnostic Tests</h2>
-        {editing ? (
-          <button onClick={handleCancelEdit} style={styles.cancelButton}>
-            <FiX style={styles.buttonIcon} /> Cancel
-          </button>
-        ) : (
-          <button 
-            onClick={() => setEditing({ id: null, name: '', result: '', date: '' })} 
-            style={styles.addButton}
-          >
-            <FiPlus style={styles.buttonIcon} /> Add Test
-          </button>
-        )}
+        <button 
+          onClick={toggleFormVisibility}
+          style={isFormVisible ? styles.cancelButton : styles.addButton}
+        >
+          {isFormVisible ? (
+            <>
+              <FiX style={styles.buttonIcon} />
+              <span style={styles.buttonText}>Cancel</span>
+            </>
+          ) : (
+            <>
+              <FiPlus style={styles.buttonIcon} />
+              <span style={styles.buttonText}>Add Test</span>
+            </>
+          )}
+        </button>
       </div>
 
       {error && <div style={styles.error}>{error}</div>}
 
-      <div style={styles.formContainer}>
-        <DiagnosticTestForm 
-          onSubmit={editing ? handleUpdate : handleAdd} 
-          initialData={editing} 
-          isSubmitting={isLoading}
-        />
-      </div>
+      {isFormVisible && (
+        <div style={styles.formContainer}>
+          <DiagnosticTestForm 
+            onSubmit={editing ? handleUpdate : handleAdd} 
+            initialData={editing || { id: null, name: '', result: '', date: '' }}
+            isSubmitting={isLoading}
+            onCancel={handleCancelEdit}
+          />
+        </div>
+      )}
 
       {isLoading && !tests.length ? (
-        <div style={styles.loading}>Loading tests...</div>
+        <div style={styles.loading}>
+          <div style={styles.spinner}></div>
+          <p>Loading tests...</p>
+        </div>
       ) : (
         <div style={styles.testList}>
           {tests.map(test => (
@@ -119,10 +142,13 @@ const DiagnosticTests = () => {
               </div>
               <div style={styles.testActions}>
                 <button 
-                  onClick={() => setEditing(test)} 
+                  onClick={() => {
+                    setEditing(test);
+                    setIsFormVisible(true);
+                  }} 
                   style={styles.editButton}
                   disabled={isLoading}
-                  title="Edit test"
+                  aria-label="Edit test"
                 >
                   <FiEdit2 style={styles.actionIcon} />
                   <span style={styles.buttonText}>Edit</span>
@@ -131,7 +157,7 @@ const DiagnosticTests = () => {
                   onClick={() => handleDelete(test.id)} 
                   style={styles.deleteButton}
                   disabled={isLoading}
-                  title="Delete test"
+                  aria-label="Delete test"
                 >
                   <FiTrash2 style={styles.actionIcon} />
                   <span style={styles.buttonText}>Delete</span>
@@ -144,7 +170,14 @@ const DiagnosticTests = () => {
 
       {!isLoading && !tests.length && (
         <div style={styles.emptyState}>
-          <p>No diagnostic tests found. Add your first test above.</p>
+          <FiFileText style={styles.emptyIcon} />
+          <p>No diagnostic tests found</p>
+          <button 
+            onClick={() => setIsFormVisible(true)}
+            style={styles.addButton}
+          >
+            <FiPlus style={styles.buttonIcon} /> Add Test
+          </button>
         </div>
       )}
     </div>
@@ -153,205 +186,268 @@ const DiagnosticTests = () => {
 
 const styles = {
   container: {
-    maxWidth: '800px',
+    maxWidth: '1200px',
     margin: '0 auto',
-    padding: '2rem',
+    padding: '16px',
     fontFamily: 'system-ui, sans-serif',
+    '@media (min-width: 768px)': {
+      padding: '24px'
+    }
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '2rem',
+    marginBottom: '16px',
+    flexWrap: 'wrap',
+    gap: '16px',
+    '@media (min-width: 768px)': {
+      marginBottom: '24px',
+      flexWrap: 'nowrap'
+    }
   },
   title: {
-    fontSize: '1.5rem',
+    fontSize: '20px',
     fontWeight: '600',
     color: '#2d3748',
     margin: 0,
+    '@media (min-width: 768px)': {
+      fontSize: '24px'
+    }
   },
   formContainer: {
     backgroundColor: '#ffffff',
-    borderRadius: '0.5rem',
-    padding: '1.5rem',
+    borderRadius: '8px',
+    padding: '16px',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    marginBottom: '2rem',
+    marginBottom: '24px',
+    '@media (min-width: 768px)': {
+      padding: '24px'
+    }
   },
   testList: {
     display: 'grid',
-    gap: '1rem',
+    gap: '16px',
+    '@media (min-width: 640px)': {
+      gridTemplateColumns: 'repeat(2, 1fr)'
+    },
+    '@media (min-width: 1024px)': {
+      gridTemplateColumns: 'repeat(3, 1fr)'
+    }
   },
   testCard: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
     backgroundColor: '#ffffff',
-    borderRadius: '0.5rem',
-    padding: '1.25rem 1.5rem',
+    borderRadius: '8px',
+    padding: '16px',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     transition: 'all 0.2s ease',
+    '@media (min-width: 768px)': {
+      flexDirection: 'row',
+      justifyContent: 'space-between'
+    }
   },
   testContent: {
     flex: 1,
+    marginBottom: '12px',
+    '@media (min-width: 768px)': {
+      marginBottom: 0
+    }
   },
   testHeader: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
-    marginBottom: '0.75rem',
+    gap: '8px',
+    marginBottom: '12px'
   },
   testIcon: {
     color: '#3182ce',
-    fontSize: '1.25rem',
-    flexShrink: 0,
+    fontSize: '18px',
+    flexShrink: 0
   },
   testName: {
-    fontSize: '1rem',
+    fontSize: '16px',
     fontWeight: '600',
     color: '#2d3748',
-    margin: 0,
+    margin: 0
   },
   testDetails: {
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: '1.5rem',
+    flexDirection: 'column',
+    gap: '8px'
   },
   testDetail: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '0.875rem',
-    color: '#4a5568',
+    gap: '8px',
+    fontSize: '14px',
+    color: '#4a5568'
   },
   detailIcon: {
     color: '#718096',
-    fontSize: '0.875rem',
-    flexShrink: 0,
+    fontSize: '14px',
+    flexShrink: 0
   },
   testActions: {
     display: 'flex',
-    gap: '0.75rem',
-    marginLeft: '1rem',
+    gap: '8px',
+    justifyContent: 'flex-end',
+    '@media (min-width: 768px)': {
+      justifyContent: 'flex-start'
+    }
   },
   addButton: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
+    justifyContent: 'center',
+    gap: '8px',
     backgroundColor: '#3182ce',
     color: 'white',
     border: 'none',
-    borderRadius: '0.375rem',
-    padding: '0.5rem 1rem',
-    fontSize: '0.875rem',
+    borderRadius: '6px',
+    padding: '8px 12px',
+    fontSize: '14px',
     fontWeight: '500',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+    width: '100%',
+    '@media (min-width: 768px)': {
+      width: 'auto'
+    }
   },
   cancelButton: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
+    justifyContent: 'center',
+    gap: '8px',
     backgroundColor: '#e2e8f0',
     color: '#4a5568',
     border: 'none',
-    borderRadius: '0.375rem',
-    padding: '0.5rem 1rem',
-    fontSize: '0.875rem',
+    borderRadius: '6px',
+    padding: '8px 12px',
+    fontSize: '14px',
     fontWeight: '500',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+    width: '100%',
+    '@media (min-width: 768px)': {
+      width: 'auto'
+    }
   },
   editButton: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
+    justifyContent: 'center',
+    gap: '8px',
     backgroundColor: '#ebf8ff',
     color: '#3182ce',
     border: 'none',
-    borderRadius: '0.375rem',
-    padding: '0.5rem 0.75rem',
-    fontSize: '0.875rem',
+    borderRadius: '6px',
+    padding: '8px 12px',
+    fontSize: '14px',
     fontWeight: '500',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+    minWidth: '80px'
   },
   deleteButton: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
+    justifyContent: 'center',
+    gap: '8px',
     backgroundColor: '#fff5f5',
     color: '#e53e3e',
     border: 'none',
-    borderRadius: '0.375rem',
-    padding: '0.5rem 0.75rem',
-    fontSize: '0.875rem',
+    borderRadius: '6px',
+    padding: '8px 12px',
+    fontSize: '14px',
     fontWeight: '500',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+    minWidth: '80px'
   },
   actionIcon: {
-    fontSize: '1rem',
+    fontSize: '16px'
   },
   buttonIcon: {
-    fontSize: '1rem',
+    fontSize: '16px'
   },
   buttonText: {
-    marginLeft: '0.25rem',
+    '@media (max-width: 400px)': {
+      display: 'none'
+    }
   },
   error: {
     backgroundColor: '#fff5f5',
-    color: '#e53e3e',
-    padding: '0.75rem 1rem',
-    borderRadius: '0.375rem',
-    marginBottom: '1.5rem',
-    fontSize: '0.875rem',
+    color: '#c53030',
+    padding: '12px',
+    borderRadius: '6px',
+    marginBottom: '16px',
+    fontSize: '14px',
+    borderLeft: '4px solid #c53030'
   },
   loading: {
-    textAlign: 'center',
-    color: '#718096',
-    padding: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '40px 0',
+    color: '#4a5568',
+    gap: '16px'
+  },
+  spinner: {
+    width: '40px',
+    height: '40px',
+    border: '4px solid rgba(0, 0, 0, 0.1)',
+    borderLeftColor: '#3182ce',
+    borderRadius: '50%',
+    animation: 'spin 1s linear infinite'
   },
   emptyState: {
-    textAlign: 'center',
-    color: '#718096',
-    padding: '2rem',
-    backgroundColor: '#f7fafc',
-    borderRadius: '0.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '40px 0',
+    color: '#a0aec0',
+    gap: '16px',
+    textAlign: 'center'
   },
+  emptyIcon: {
+    fontSize: '32px',
+    color: '#cbd5e0'
+  }
 };
 
-// Add hover effects
+// Add animations
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(`
-  [style*="testCard"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 `, styleSheet.cssRules.length);
 
+// Add hover effects only on devices that support hover
 styleSheet.insertRule(`
-  [style*="addButton"]:hover {
-    background-color: #2c5282;
-  }
-`, styleSheet.cssRules.length);
-
-styleSheet.insertRule(`
-  [style*="cancelButton"]:hover {
-    background-color: #cbd5e0;
-  }
-`, styleSheet.cssRules.length);
-
-styleSheet.insertRule(`
-  [style*="editButton"]:hover {
-    background-color: #bee3f8;
-    transform: translateY(-1px);
-  }
-`, styleSheet.cssRules.length);
-
-styleSheet.insertRule(`
-  [style*="deleteButton"]:hover {
-    background-color: #fed7d7;
-    transform: translateY(-1px);
+  @media (hover: hover) {
+    [style*="testCard"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    [style*="addButton"]:hover {
+      background-color: #2c5282;
+    }
+    [style*="cancelButton"]:hover {
+      background-color: #cbd5e0;
+    }
+    [style*="editButton"]:hover {
+      background-color: #bee3f8;
+    }
+    [style*="deleteButton"]:hover {
+      background-color: #fed7d7;
+    }
   }
 `, styleSheet.cssRules.length);
 

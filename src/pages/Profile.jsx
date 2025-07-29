@@ -149,7 +149,7 @@ const Profile = () => {
                 disabled={isLoading}
               />
               <FiBell style={styles.checkboxIcon} />
-              Receive Email Notifications
+              <span>Receive Email Notifications</span>
             </label>
           </div>
 
@@ -180,122 +180,142 @@ const styles = {
   container: {
     display: 'flex',
     justifyContent: 'center',
-    padding: '2rem',
+    padding: '16px',
     backgroundColor: '#f8fafc',
-    minHeight: '100vh'
+    minHeight: '100vh',
+    '@media (min-width: 768px)': {
+      padding: '24px'
+    }
   },
   card: {
     backgroundColor: 'white',
     borderRadius: '12px',
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-    padding: '2rem',
+    padding: '16px',
     width: '100%',
-    maxWidth: '600px'
+    maxWidth: '600px',
+    '@media (min-width: 768px)': {
+      padding: '24px'
+    }
   },
   title: {
-    fontSize: '1.5rem',
+    fontSize: '20px',
     fontWeight: '600',
     color: '#1e293b',
-    marginBottom: '2rem',
-    paddingBottom: '1rem',
-    borderBottom: '1px solid #e2e8f0'
+    marginBottom: '16px',
+    paddingBottom: '12px',
+    borderBottom: '1px solid #e2e8f0',
+    '@media (min-width: 768px)': {
+      fontSize: '24px',
+      marginBottom: '24px'
+    }
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem'
+    gap: '16px',
+    '@media (min-width: 768px)': {
+      gap: '24px'
+    }
   },
   nameFields: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '1rem'
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+    '@media (min-width: 640px)': {
+      flexDirection: 'row'
+    }
   },
   formGroup: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.5rem'
+    gap: '8px',
+    flex: '1'
   },
   label: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '0.875rem',
+    gap: '8px',
+    fontSize: '14px',
     fontWeight: '500',
     color: '#475569'
   },
   icon: {
-    color: '#64748b'
+    color: '#64748b',
+    fontSize: '16px'
   },
   input: {
-    padding: '0.75rem 1rem',
+    padding: '12px 16px',
     border: '1px solid #e2e8f0',
     borderRadius: '8px',
-    fontSize: '0.875rem',
+    fontSize: '14px',
     transition: 'all 0.2s',
-    outline: 'none'
-  },
-  'input:focus': {
-    borderColor: '#3b82f6',
-    boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)'
+    outline: 'none',
+    width: '100%',
+    boxSizing: 'border-box'
   },
   hint: {
-    fontSize: '0.75rem',
+    fontSize: '12px',
     color: '#64748b',
-    marginTop: '0.25rem'
+    marginTop: '4px'
   },
   checkboxGroup: {
-    margin: '1rem 0'
+    margin: '16px 0'
   },
   checkboxLabel: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '0.875rem',
+    gap: '8px',
+    fontSize: '14px',
     color: '#475569',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    userSelect: 'none'
   },
   checkbox: {
-    width: '1rem',
-    height: '1rem',
+    width: '16px',
+    height: '16px',
     accentColor: '#3b82f6',
     cursor: 'pointer'
   },
   checkboxIcon: {
-    color: '#64748b'
+    color: '#64748b',
+    fontSize: '16px'
   },
   submitButton: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '0.5rem',
+    gap: '8px',
     backgroundColor: '#3b82f6',
     color: 'white',
     border: 'none',
     borderRadius: '8px',
-    padding: '0.75rem 1rem',
-    fontSize: '0.875rem',
+    padding: '12px 16px',
+    fontSize: '14px',
     fontWeight: '500',
     cursor: 'pointer',
     transition: 'background-color 0.2s',
-    marginTop: '1rem'
-  },
-  'submitButton:hover': {
-    backgroundColor: '#2563eb'
+    marginTop: '16px',
+    width: '100%',
+    '@media (min-width: 768px)': {
+      width: 'auto',
+      alignSelf: 'flex-start'
+    }
   },
   buttonLoading: {
     backgroundColor: '#93c5fd',
     cursor: 'not-allowed'
   },
   buttonIcon: {
-    fontSize: '1rem'
+    fontSize: '16px'
   },
   successMessage: {
     backgroundColor: '#ecfdf5',
     color: '#059669',
-    padding: '0.75rem 1rem',
+    padding: '12px 16px',
     borderRadius: '8px',
-    marginTop: '1rem',
-    fontSize: '0.875rem',
+    marginTop: '16px',
+    fontSize: '14px',
     textAlign: 'center'
   }
 };
@@ -303,15 +323,14 @@ const styles = {
 // Add dynamic styles
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(`
-  input:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-  }
-`, styleSheet.cssRules.length);
-
-styleSheet.insertRule(`
-  button:hover {
-    background-color: #2563eb !important;
+  @media (hover: hover) {
+    input:focus {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+    button:hover {
+      background-color: #2563eb !important;
+    }
   }
 `, styleSheet.cssRules.length);
 

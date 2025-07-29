@@ -80,7 +80,7 @@ const Login = () => {
                   <circle style={styles.spinnerCircle} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path style={styles.spinnerPath} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Signing in with Google...
+                <span style={styles.buttonText}>Signing in with Google...</span>
               </>
             ) : (
               <>
@@ -90,7 +90,7 @@ const Login = () => {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                 </svg>
-                Sign in with Google
+                <span style={styles.buttonText}>Sign in with Google</span>
               </>
             )}
           </button>
@@ -173,7 +173,7 @@ const Login = () => {
                     <circle style={styles.spinnerCircle} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path style={styles.spinnerPath} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Signing in...
+                  <span style={styles.buttonText}>Signing in...</span>
                 </>
               ) : (
                 'Sign in'
@@ -193,7 +193,6 @@ const Login = () => {
   );
 };
 
-// Updated styles object with new styles for OAuth
 const styles = {
   loginContainer: {
     minHeight: '100vh',
@@ -205,23 +204,32 @@ const styles = {
     fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"
   },
   loginCard: {
-    maxWidth: '448px',
     width: '100%',
+    maxWidth: '448px',
     backgroundColor: 'white',
-    padding: '32px',
+    padding: '24px',
     borderRadius: '8px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    '@media (min-width: 640px)': {
+      padding: '32px'
+    }
   },
   loginHeader: {
     textAlign: 'center',
-    marginBottom: '32px'
+    marginBottom: '24px',
+    '@media (min-width: 640px)': {
+      marginBottom: '32px'
+    }
   },
   loginTitle: {
     margin: '0',
-    fontSize: '30px',
+    fontSize: '24px',
     fontWeight: '800',
     color: '#1a202c',
-    lineHeight: '1.25'
+    lineHeight: '1.25',
+    '@media (min-width: 640px)': {
+      fontSize: '30px'
+    }
   },
   loginSubheader: {
     marginTop: '8px',
@@ -232,9 +240,12 @@ const styles = {
   errorMessage: {
     backgroundColor: '#fef2f2',
     borderLeft: '4px solid #f56565',
-    padding: '16px',
+    padding: '12px',
     marginBottom: '16px',
-    borderRadius: '4px'
+    borderRadius: '4px',
+    '@media (min-width: 640px)': {
+      padding: '16px'
+    }
   },
   errorContent: {
     display: 'flex',
@@ -259,14 +270,17 @@ const styles = {
     lineHeight: '1.5'
   },
   socialLoginContainer: {
-    marginBottom: '24px'
+    marginBottom: '20px',
+    '@media (min-width: 640px)': {
+      marginBottom: '24px'
+    }
   },
   googleButton: {
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '8px 16px',
+    padding: '8px 12px',
     fontSize: '14px',
     fontWeight: '500',
     borderRadius: '6px',
@@ -278,6 +292,14 @@ const styles = {
     transition: 'background-color 0.2s',
     ':hover': {
       backgroundColor: '#f8fafc'
+    },
+    '@media (min-width: 640px)': {
+      padding: '8px 16px'
+    }
+  },
+  buttonText: {
+    '@media (max-width: 400px)': {
+      display: 'none'
     }
   },
   googleIcon: {
@@ -288,7 +310,10 @@ const styles = {
   divider: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '24px'
+    marginBottom: '20px',
+    '@media (min-width: 640px)': {
+      marginBottom: '24px'
+    }
   },
   dividerLine: {
     flex: '1',
@@ -296,15 +321,21 @@ const styles = {
     backgroundColor: '#e2e8f0'
   },
   dividerText: {
-    padding: '0 16px',
+    padding: '0 12px',
     fontSize: '14px',
-    color: '#718096'
+    color: '#718096',
+    '@media (min-width: 640px)': {
+      padding: '0 16px'
+    }
   },
   loginForm: {
     marginTop: '0'
   },
   formInputs: {
-    marginBottom: '24px'
+    marginBottom: '20px',
+    '@media (min-width: 640px)': {
+      marginBottom: '24px'
+    }
   },
   inputGroup: {
     marginBottom: '16px'
@@ -326,13 +357,17 @@ const styles = {
     fontSize: '14px',
     lineHeight: '1.5',
     color: '#4a5568',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    boxSizing: 'border-box'
   },
   formOptions: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '24px'
+    marginBottom: '20px',
+    '@media (min-width: 640px)': {
+      marginBottom: '24px'
+    }
   },
   rememberMe: {
     display: 'flex',
@@ -370,11 +405,18 @@ const styles = {
     backgroundColor: '#667eea',
     cursor: 'pointer',
     border: 'none',
-    height: '40px'
+    height: '40px',
+    transition: 'background-color 0.2s',
+    ':hover': {
+      backgroundColor: '#5a67d8'
+    }
   },
   submitButtonLoading: {
     opacity: '0.75',
-    cursor: 'not-allowed'
+    cursor: 'not-allowed',
+    ':hover': {
+      backgroundColor: '#667eea'
+    }
   },
   spinner: {
     animation: 'spin 1s linear infinite',
@@ -393,7 +435,10 @@ const styles = {
   loginLink: {
     color: '#667eea',
     fontWeight: '500',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    ':hover': {
+      textDecoration: 'underline'
+    }
   },
   signupLink: {
     textAlign: 'center',

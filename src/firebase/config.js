@@ -1,6 +1,6 @@
 // 📁 ai-health-app/src/firebase/config.js
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -13,5 +13,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+
+const auth = getAuth(app);
+const db = getFirestore(app); // Create db instance
+const googleProvider = new GoogleAuthProvider();
+
+export { auth, db, googleProvider };

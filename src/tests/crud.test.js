@@ -1,4 +1,4 @@
-
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { db } from '../firebase/config';
 import {
   collection,
@@ -9,14 +9,16 @@ import {
   doc,
 } from 'firebase/firestore';
 
-jest.mock('firebase/firestore', () => {
+vi.mock('firebase/firestore', async () => {
+  const actual = await vi.importActual('firebase/firestore');
   return {
-    collection: jest.fn(),
-    addDoc: jest.fn(),
-    getDocs: jest.fn(),
-    updateDoc: jest.fn(),
-    deleteDoc: jest.fn(),
-    doc: jest.fn(),
+    ...actual,
+    collection: vi.fn(),
+    addDoc: vi.fn(),
+    getDocs: vi.fn(),
+    updateDoc: vi.fn(),
+    deleteDoc: vi.fn(),
+    doc: vi.fn(),
   };
 });
 
@@ -24,10 +26,10 @@ describe('🔥 CRUD operations with Firestore', () => {
   const mockCollection = 'users';
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  test('🟢 creates a new document', async () => {
+  it('creates a new document', async () => {
     addDoc.mockResolvedValue({ id: '123' });
 
     const data = { name: 'John', age: 25 };
@@ -37,7 +39,7 @@ describe('🔥 CRUD operations with Firestore', () => {
     expect(result.id).toBe('123');
   });
 
-  test('🔵 reads documents from collection', async () => {
+  it('reads documents from collection', async () => {
     const mockDocs = [{ id: '1', data: () => ({ name: 'Alice' }) }];
     getDocs.mockResolvedValue({ docs: mockDocs });
 
@@ -48,7 +50,7 @@ describe('🔥 CRUD operations with Firestore', () => {
     expect(result[0].name).toBe('Alice');
   });
 
-  test('🟡 updates a document', async () => {
+  it('updates a document', async () => {
     updateDoc.mockResolvedValue();
 
     const docRef = doc(db, mockCollection, '123');
@@ -57,7 +59,7 @@ describe('🔥 CRUD operations with Firestore', () => {
     expect(updateDoc).toHaveBeenCalled();
   });
 
-  test('🔴 deletes a document', async () => {
+  it('deletes a document', async () => {
     deleteDoc.mockResolvedValue();
 
     const docRef = doc(db, mockCollection, '123');

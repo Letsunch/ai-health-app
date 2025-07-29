@@ -1,4 +1,4 @@
-
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import {
   collection,
   doc,
@@ -9,23 +9,28 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 
-jest.mock('firebase/firestore', () => ({
-  collection: jest.fn(),
-  doc: jest.fn(),
-  addDoc: jest.fn(),
-  getDocs: jest.fn(),
-  updateDoc: jest.fn(),
-  deleteDoc: jest.fn(),
-}));
+// ✅ Partial mock firebase/firestore but keep getFirestore usable
+vi.mock('firebase/firestore', async () => {
+  const actual = await vi.importActual('firebase/firestore');
+  return {
+    ...actual,
+    collection: vi.fn(),
+    doc: vi.fn(),
+    addDoc: vi.fn(),
+    getDocs: vi.fn(),
+    updateDoc: vi.fn(),
+    deleteDoc: vi.fn(),
+  };
+});
 
 describe('🧪 Firestore DB tests', () => {
   const collectionName = 'testCollection';
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  test('📥 adds a document to Firestore', async () => {
+  it('📥 adds a document to Firestore', async () => {
     addDoc.mockResolvedValue({ id: 'mockId123' });
 
     const data = { title: 'Test', body: 'Mock content' };
@@ -36,7 +41,7 @@ describe('🧪 Firestore DB tests', () => {
     expect(result.id).toBe('mockId123');
   });
 
-  test('📤 reads documents from Firestore', async () => {
+  it('📤 reads documents from Firestore', async () => {
     const mockDocs = [
       { id: '1', data: () => ({ name: 'Alice' }) },
       { id: '2', data: () => ({ name: 'Bob' }) },
@@ -52,7 +57,7 @@ describe('🧪 Firestore DB tests', () => {
     expect(results[0].name).toBe('Alice');
   });
 
-  test('🛠 updates a document in Firestore', async () => {
+  it('🛠 updates a document in Firestore', async () => {
     updateDoc.mockResolvedValue();
 
     const docRef = doc(db, collectionName, 'doc123');
@@ -63,7 +68,7 @@ describe('🧪 Firestore DB tests', () => {
     expect(updateDoc).toHaveBeenCalledWith(docRef, updateData);
   });
 
-  test('🗑 deletes a document from Firestore', async () => {
+  it('🗑 deletes a document from Firestore', async () => {
     deleteDoc.mockResolvedValue();
 
     const docRef = doc(db, collectionName, 'doc123');

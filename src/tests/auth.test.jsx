@@ -1,12 +1,12 @@
-
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import PrivateRoute from './PrivateRoute';
-import { AuthContext } from './AuthProvider';
+import { describe, it, expect } from 'vitest';
+import PrivateRoute from '../auth/PrivateRoute';
+import { AuthContext } from '../auth/AuthProvider';
 
-describe('PrivateRoute', () => {
-  test('renders child component if user is authenticated', () => {
+describe('🔐 PrivateRoute', () => {
+  it('✅ renders child component if user is authenticated', () => {
     const fakeUser = { uid: '123', email: 'test@example.com' };
 
     render(
@@ -29,7 +29,7 @@ describe('PrivateRoute', () => {
     expect(screen.getByText('Protected Page')).toBeInTheDocument();
   });
 
-  test('redirects to /register if user is not authenticated', () => {
+  it('🚫 redirects to /login if user is not authenticated', () => {
     render(
       <AuthContext.Provider value={{ user: null }}>
         <MemoryRouter initialEntries={['/profile']}>
@@ -42,12 +42,12 @@ describe('PrivateRoute', () => {
                 </PrivateRoute>
               }
             />
-            <Route path="/register" element={<h1>Register Page</h1>} />
+            <Route path="/login" element={<h1>Login Page</h1>} />
           </Routes>
         </MemoryRouter>
       </AuthContext.Provider>
     );
 
-    expect(screen.getByText('Register Page')).toBeInTheDocument();
+    expect(screen.getByText('Login Page')).toBeInTheDocument();
   });
 });

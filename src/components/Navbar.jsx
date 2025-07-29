@@ -17,7 +17,11 @@ const Navbar = () => {
   // Format the user display name
   const getUserDisplay = () => {
     if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName} (${user.email})`;
+      return `${user.firstName} ${user.lastName}`;
+    } else if (user?.firstName) {
+      return user.firstName;
+    } else if (user?.lastName) {
+      return user.lastName;
     }
     return user?.email || '';
   };
@@ -45,7 +49,7 @@ const Navbar = () => {
       
       {user && (
         <div style={styles.userSection}>
-          <span style={styles.userEmail}>{getUserDisplay()}</span>
+          <span style={styles.userName}>{getUserDisplay()}</span>
           <button onClick={handleLogout} style={styles.logoutButton}>
             <FiLogOut style={styles.logoutIcon} />
             <span>Logout</span>
@@ -108,7 +112,7 @@ const styles = {
     alignItems: 'center',
     gap: '1.5rem',
   },
-  userEmail: {
+  userName: {
     fontSize: '0.875rem',
     color: '#4a5568',
     fontWeight: 500,
@@ -132,14 +136,14 @@ const styles = {
 // Add hover effects
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(`
-  .nav-link:hover {
+  [style*="navLink"]:hover {
     background-color: #ebf8ff;
     color: #3182ce;
   }
 `, styleSheet.cssRules.length);
 
 styleSheet.insertRule(`
-  .logout-button:hover {
+  [style*="logoutButton"]:hover {
     background-color: #fff5f5;
     border-color: #fed7d7;
   }

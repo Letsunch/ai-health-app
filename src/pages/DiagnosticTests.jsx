@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getTests, addTest, updateTest, deleteTest } from '../services/testsService';
 import DiagnosticTestForm from '../components/DiagnosticTestForm';
-import { FiEdit2, FiTrash2, FiPlus, FiX, FiCheck } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiPlus, FiX, FiFileText, FiCalendar, FiBarChart2 } from 'react-icons/fi';
 import moment from 'moment';
 
 const DiagnosticTests = () => {
@@ -102,12 +102,17 @@ const DiagnosticTests = () => {
           {tests.map(test => (
             <div key={test.id} style={styles.testCard}>
               <div style={styles.testContent}>
-                <h3 style={styles.testName}>{test.name}</h3>
+                <div style={styles.testHeader}>
+                  <FiFileText style={styles.testIcon} />
+                  <h3 style={styles.testName}>{test.name}</h3>
+                </div>
                 <div style={styles.testDetails}>
-                  <span style={styles.testResult}>
+                  <span style={styles.testDetail}>
+                    <FiBarChart2 style={styles.detailIcon} />
                     <strong>Result:</strong> {test.result}
                   </span>
-                  <span style={styles.testDate}>
+                  <span style={styles.testDetail}>
+                    <FiCalendar style={styles.detailIcon} />
                     <strong>Date:</strong> {moment(test.date).format('MMM D, YYYY')}
                   </span>
                 </div>
@@ -117,15 +122,19 @@ const DiagnosticTests = () => {
                   onClick={() => setEditing(test)} 
                   style={styles.editButton}
                   disabled={isLoading}
+                  title="Edit test"
                 >
                   <FiEdit2 style={styles.actionIcon} />
+                  <span style={styles.buttonText}>Edit</span>
                 </button>
                 <button 
                   onClick={() => handleDelete(test.id)} 
                   style={styles.deleteButton}
                   disabled={isLoading}
+                  title="Delete test"
                 >
                   <FiTrash2 style={styles.actionIcon} />
+                  <span style={styles.buttonText}>Delete</span>
                 </button>
               </div>
             </div>
@@ -178,32 +187,51 @@ const styles = {
     alignItems: 'center',
     backgroundColor: '#ffffff',
     borderRadius: '0.5rem',
-    padding: '1rem 1.5rem',
+    padding: '1.25rem 1.5rem',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-  },
-  testCardHover: {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    transition: 'all 0.2s ease',
   },
   testContent: {
     flex: 1,
+  },
+  testHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    marginBottom: '0.75rem',
+  },
+  testIcon: {
+    color: '#3182ce',
+    fontSize: '1.25rem',
+    flexShrink: 0,
   },
   testName: {
     fontSize: '1rem',
     fontWeight: '600',
     color: '#2d3748',
-    margin: '0 0 0.5rem 0',
+    margin: 0,
   },
   testDetails: {
     display: 'flex',
+    flexWrap: 'wrap',
     gap: '1.5rem',
+  },
+  testDetail: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
     fontSize: '0.875rem',
     color: '#4a5568',
   },
+  detailIcon: {
+    color: '#718096',
+    fontSize: '0.875rem',
+    flexShrink: 0,
+  },
   testActions: {
     display: 'flex',
-    gap: '0.5rem',
+    gap: '0.75rem',
+    marginLeft: '1rem',
   },
   addButton: {
     display: 'flex',
@@ -217,10 +245,7 @@ const styles = {
     fontSize: '0.875rem',
     fontWeight: '500',
     cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
-  },
-  addButtonHover: {
-    backgroundColor: '#2c5282',
+    transition: 'all 0.2s ease',
   },
   cancelButton: {
     display: 'flex',
@@ -234,48 +259,44 @@ const styles = {
     fontSize: '0.875rem',
     fontWeight: '500',
     cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
-  },
-  cancelButtonHover: {
-    backgroundColor: '#cbd5e0',
+    transition: 'all 0.2s ease',
   },
   editButton: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: '0.5rem',
     backgroundColor: '#ebf8ff',
     color: '#3182ce',
     border: 'none',
     borderRadius: '0.375rem',
-    width: '2rem',
-    height: '2rem',
+    padding: '0.5rem 0.75rem',
+    fontSize: '0.875rem',
+    fontWeight: '500',
     cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
-  },
-  editButtonHover: {
-    backgroundColor: '#bee3f8',
+    transition: 'all 0.2s ease',
   },
   deleteButton: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: '0.5rem',
     backgroundColor: '#fff5f5',
     color: '#e53e3e',
     border: 'none',
     borderRadius: '0.375rem',
-    width: '2rem',
-    height: '2rem',
+    padding: '0.5rem 0.75rem',
+    fontSize: '0.875rem',
+    fontWeight: '500',
     cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
-  },
-  deleteButtonHover: {
-    backgroundColor: '#fed7d7',
+    transition: 'all 0.2s ease',
   },
   actionIcon: {
     fontSize: '1rem',
   },
   buttonIcon: {
     fontSize: '1rem',
+  },
+  buttonText: {
+    marginLeft: '0.25rem',
   },
   error: {
     backgroundColor: '#fff5f5',
@@ -302,33 +323,35 @@ const styles = {
 // Add hover effects
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(`
-  .test-card:hover {
+  [style*="testCard"]:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 `, styleSheet.cssRules.length);
 
 styleSheet.insertRule(`
-  .add-button:hover {
+  [style*="addButton"]:hover {
     background-color: #2c5282;
   }
 `, styleSheet.cssRules.length);
 
 styleSheet.insertRule(`
-  .cancel-button:hover {
+  [style*="cancelButton"]:hover {
     background-color: #cbd5e0;
   }
 `, styleSheet.cssRules.length);
 
 styleSheet.insertRule(`
-  .edit-button:hover {
+  [style*="editButton"]:hover {
     background-color: #bee3f8;
+    transform: translateY(-1px);
   }
 `, styleSheet.cssRules.length);
 
 styleSheet.insertRule(`
-  .delete-button:hover {
+  [style*="deleteButton"]:hover {
     background-color: #fed7d7;
+    transform: translateY(-1px);
   }
 `, styleSheet.cssRules.length);
 

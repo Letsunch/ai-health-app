@@ -55,3 +55,5 @@ const Profile = () => {
     </form>
   );
 };
+
+export default Profile;

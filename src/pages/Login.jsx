@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/config';
 
@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/alerts');
@@ -32,12 +32,12 @@ const Login = () => {
           <h2 style={styles.loginTitle}>Sign in to your account</h2>
           <p style={styles.loginSubheader}>
             Or{' '}
-            <a href="#" style={styles.loginLink}>
+            <Link to="/register" style={styles.loginLink}>
               start your 14-day free trial
-            </a>
+            </Link>
           </p>
         </div>
-        
+
         {error && (
           <div style={styles.errorMessage}>
             <div style={styles.errorContent}>
@@ -52,7 +52,7 @@ const Login = () => {
             </div>
           </div>
         )}
-        
+
         <form style={styles.loginForm} onSubmit={handleLogin}>
           <div style={styles.formInputs}>
             <div style={styles.inputGroup}>
@@ -103,9 +103,9 @@ const Login = () => {
             </div>
 
             <div style={styles.forgotPassword}>
-              <a href="#" style={styles.loginLink}>
+              <Link to="/forgot-password" style={styles.loginLink}>
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -132,19 +132,19 @@ const Login = () => {
             </button>
           </div>
         </form>
-        
+
         <div style={styles.signupLink}>
           Don't have an account?{' '}
-          <a href="#" style={styles.loginLink}>
+          <Link to="/register" style={styles.loginLink}>
             Sign up
-          </a>
+          </Link>
         </div>
       </div>
     </div>
   );
 };
 
-// All styles in a single object
+// Styles object remains unchanged (as in your version)
 const styles = {
   loginContainer: {
     minHeight: '100vh',
@@ -232,12 +232,10 @@ const styles = {
     padding: '8px 12px',
     border: '1px solid #e2e8f0',
     borderRadius: '6px',
-    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     fontSize: '14px',
     lineHeight: '1.5',
     color: '#4a5568',
-    backgroundColor: 'white',
-    transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
+    backgroundColor: 'white'
   },
   formOptions: {
     display: 'flex',
@@ -252,7 +250,6 @@ const styles = {
   checkbox: {
     height: '16px',
     width: '16px',
-    color: '#667eea',
     border: '1px solid #e2e8f0',
     borderRadius: '4px',
     marginRight: '8px',
@@ -261,7 +258,6 @@ const styles = {
   checkboxLabel: {
     fontSize: '14px',
     color: '#1a202c',
-    lineHeight: '1.5',
     cursor: 'pointer'
   },
   forgotPassword: {
@@ -271,20 +267,18 @@ const styles = {
     marginTop: '16px'
   },
   submitButton: {
-    position: 'relative',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '8px 16px',
-    border: '1px solid transparent',
     fontSize: '14px',
     fontWeight: '500',
     borderRadius: '6px',
     color: 'white',
     backgroundColor: '#667eea',
     cursor: 'pointer',
-    transition: 'background-color 0.15s ease-in-out',
+    border: 'none',
     height: '40px'
   },
   submitButtonLoading: {
@@ -308,28 +302,17 @@ const styles = {
   loginLink: {
     color: '#667eea',
     fontWeight: '500',
-    textDecoration: 'none',
-    transition: 'color 0.15s ease-in-out'
+    textDecoration: 'none'
   },
   signupLink: {
     textAlign: 'center',
     fontSize: '14px',
     color: '#4a5568',
-    marginTop: '16px',
-    lineHeight: '1.5'
-  },
-  // Keyframes for spinner animation
-  '@keyframes spin': {
-    from: {
-      transform: 'rotate(0deg)'
-    },
-    to: {
-      transform: 'rotate(360deg)'
-    }
+    marginTop: '16px'
   }
 };
 
-// Add the animation to the document's styles
+// Add spinner keyframes
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(`
   @keyframes spin {
